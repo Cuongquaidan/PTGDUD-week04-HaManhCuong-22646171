@@ -1,60 +1,50 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaChevronRight } from "react-icons/fa";
 import AvatarPig from "/avatarPig.jpg"
 import ShareIcon from "/iconShare.svg"
 import Item from '../components/Item';
 import { FaChevronLeft } from "react-icons/fa";
+import {useLocation} from "react-router-dom";
 function RecipeBox() {
+    const [data,setData] = useState([])
     const [tab,setTab] = useState("Saved Recipes")
     const tabs = [
         "Saved Recipes",
         "Folders",
         "Recipes by Genevieve"
     ]
-    const data =[
-        {
-            id:1,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
-        },
-        {
-            id:2,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
-        },
-        {
-            id:3,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
-        },
-        {
-            id:4,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
-        },
-        {
-            id:5,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
-        },
-        {
-            id:6,
-            name: "name adsadsa dsadsa a sdadas as",
-            urlImg: "https://images.pexels.com/photos/4048672/pexels-photo-4048672.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-            time: "15 minutes"
+    useEffect(()=>{
+        const fetchData = async ()=>{
+            const res = await fetch("https://66f5f8bb436827ced97590b0.mockapi.io/api/v1/items");
+            if(!res.ok){
+                throw new Error("Something went wrong");
+            }
+            
+            const data = await res.json();
+            setData(data);
+
         }
-    ]
+        fetchData();
+    },[])
+    const location = useLocation();
+    const locationArr = location.pathname.split("/");
+    const currentLocation = locationArr[locationArr.length-1];
   return (
     <div className='w-[1400px] mx-auto p-4'>
         <div className='flex gap-2 font-bold text-md items-center'>
-            <p>Home</p>
-            <FaChevronRight className='mt-1' color='gray' />
-            <p className='text-[#F44B87FF]'>your-recipe-box</p>
+            
+        
+            {
+                locationArr.map((item,index)=>{
+                    if(item ===""){
+                        return <p key={index}>Home</p>
+                    }
+                    return <>
+                    <FaChevronRight className='mt-1' color='gray' />
+                    <p key={index} className={`${item === currentLocation && "text-[#F44B87FF]"}`}>{item}</p>  
+                    </>
+                })
+            }
         </div>
         <div className='p-4'>
             <div className='mt-10'>
